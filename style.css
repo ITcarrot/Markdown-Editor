@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  padding: 0;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.info {
+  font-family: monospace;
+  white-space: nowrap;
+  position: absolute;
+  bottom: 0;
+  background: #eee;
+  padding: 2px;
+  height: 20px;
+  left: 0;
+  right: 0;
+}
+
+.info label {
+  font-weight: bold;
+}
+
+.select-math{
+	display:inline-block;
+	padding:0 20px;
+}

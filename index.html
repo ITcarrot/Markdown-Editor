@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Markdown Editor</title>
+	<meta charset="utf-8">
+	
+	<script src="jquery-3.6.0.min.js"></script>
+	<script src="jquery.autosize.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	
+	<script>
+	MathJax = {
+	  tex: {
+		inlineMath: [['$', '$'], ['\\(', '\\)']]
+	  }
+	};
+	</script>
+	<script id="MathJax-script" async src="MathJax-3.2.2/es5/tex-chtml-full.js"></script>
+	<script src="sh_main.min.js"></script>
+	<script src="marked.js"></script>
+	
+	<script src="codemirror/codemirror.js"></script>
+	<script src="codemirror/addon/active-line.js"></script>
+	<script src="codemirror/addon/fullscreen.js"></script>
+	<script src="codemirror/mode/xml.js"></script>
+	<script src="codemirror/mode/markdown.js"></script>
+	<script src="codemirror/addon/fold/brace-fold.js"></script>
+	<script src="codemirror/addon/fold/comment-fold.js"></script>
+	<script src="codemirror/addon/fold/indent-fold.js"></script>
+	<script src="codemirror/addon/fold/markdown-fold.js"></script>
+	<script src="codemirror/addon/fold/xml-fold.js"></script>
+	<script src="codemirror/addon/fold/foldcode.js"></script>
+	<script src="codemirror/addon/fold/foldgutter.js"></script>
+	<script src="codemirror/addon/edit/matchtags.js"></script>
+	<script src="codemirror/addon/edit/closetag.js"></script>
+	<script src="codemirror/addon/edit/continuelist.js"></script>
+	<script src="codemirror/addon/comment/comment.js"></script>
+	
+	<script src="math-editor.js"></script>
+	<script src="editor.js"></script>
+	<script src="image.js"></script>
+	
+	<link rel="stylesheet" href="codemirror/codemirror.css">
+	<link rel="stylesheet" href="codemirror/fullscreen.css">
+	<link rel="stylesheet" href="codemirror/foldgutter.css">
+	
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<link rel="stylesheet" href="uoj-theme.css">
+	<link rel="stylesheet" href="sh_typical.min.css">
+	<link rel="stylesheet" href="blog-editor.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="text-right" style="padding-right:20px"><ul class="nav nav-tabs" role="tablist">
+			<li><a id="new"> <img src="img/file_add.png"/> 新建 </a></li>
+			<li><a id="open"><img src="img/file.png"/> 打开 </a></li>
+			<li><a id="save"><img src="img/diskette.png"/> 保存 </a></li>
+			<li><a id="print"> 打印 </a></li>
+			<li><a id="button-math-editor"> 数学公式编辑器 </a></li>
+			<li><a id="button-image-selector"> 图片管理 </a></li>
+		<span id="save-tag">*</span><label>Filename: </label><span id="filename">[no document loaded]</span>
+	</ul></div>
+	
+	<div id="div-image-selector" style="display:none;background:white">
+		<div class="row text-center">
+			<input class="form-control input-sm top-buffer-md bot-buffer-md" style="display:inline;width:200px" id="paste-img" placeholder="在此处粘贴图片" />
+			<button class="btn btn-primary btn-sm" onclick="$('#openImg').click()">浏览图片</button>
+			<input style="display:none;" id="openImg" type="file" />
+		</div>
+		<div id="img-pool"></div>
+		<hr/>
+	</div>
+	
+	<div id="div-math-editor" style="display:none;background:white">
+		<div class="row text-center">
+			<ul class="nav nav-tabs">
+				<li><a href="#tab-color" data-toggle="tab">颜色</a></li>
+				<li><a href="#tab-big-op" data-toggle="tab">大运算符</a></li>
+				<li><a href="#tab-mid-op" data-toggle="tab">运算符</a></li>
+				<li><a href="#tab-bf-op" data-toggle="tab">指示符</a></li>
+				<li><a href="#tab-cmp" data-toggle="tab">逻辑运算符</a></li>
+				<li><a href="#tab-bracket" data-toggle="tab">括号</a></li>
+				<li><a href="#tab-space" data-toggle="tab">空格</a></li>
+				<li><a href="#tab-symbol" data-toggle="tab">奇怪的符号</a></li>
+				<li><a href="#tab-sup" data-toggle="tab">上下标</a></li>
+				<li><a href="#tab-arrow" data-toggle="tab">箭头</a></li>
+				<li><a href="#tab-func" data-toggle="tab">函数</a></li>
+				<li><a href="#tab-multi" data-toggle="tab">多行表达式</a></li>
+			</ul>
+			<div class="top-buffer-md"></div>
+			<div class="col-md-6"><div class="tab-content">
+				<div class="tab-pane" id="tab-color"></div>
+				<div class="tab-pane" id="tab-big-op"></div>
+				<div class="tab-pane" id="tab-mid-op"></div>
+				<div class="tab-pane" id="tab-bf-op"></div>
+				<div class="tab-pane" id="tab-cmp"></div>
+				<div class="tab-pane" id="tab-bracket"></div>
+				<div class="tab-pane" id="tab-space"></div>
+				<div class="tab-pane" id="tab-symbol"></div>
+				<div class="tab-pane" id="tab-sup"></div>
+				<div class="tab-pane" id="tab-arrow"></div>
+				<div class="tab-pane" id="tab-func"></div>
+				<div class="tab-pane" id="tab-multi"></div>
+			</div></div>
+			<div class="col-md-6">
+				<textarea class="form-control" id="input-math" oninput="update()" style="min-height:150px"></textarea>
+				<div id="view-math" style="overflow:auto"></div>
+			</div>
+		</div>
+		<hr/>
+	</div>
+	
+	<div class="blog-content-md-editor-in">
+		<div class="col-xs-6" style="padding:0;height:100%">
+			<div id="editor" style="height:100%"></div>
+		</div>
+		<div class="col-xs-6" style="height:100%;overflow:auto" deep="6">
+			<article id="editor-preview"></article>
+			<div style="height:300px"></div>
+		</div>
+	</div>
+
+	<input style="display:none;" id="openFile" type="file" />
+	<input style="display:none;" id="saveFile" type="file" nwsaveas />
+</body>
+</html>

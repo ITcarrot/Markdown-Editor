@@ -27,9 +27,17 @@ function getImgStr()
 function imgParseHtml(article)
 {
 	article.find('img').each(function(){
-		id=/localimg([0-9]+)/.exec($(this).attr('src'));
-		if(id && !isNaN(id[1]) && id[1]<image_set.length)
-			$(this).attr('src',image_set[id[1]]);
+		var src=$(this).attr('src');
+		if(/^\.{1,2}\//.test(src)){
+			var ParseEntry = FileEntry;
+			ParseEntry = ParseEntry.replaceAll('\\','/');
+			ParseEntry = /.*\//.exec(ParseEntry)[0];
+			$(this).attr('src',ParseEntry + src);
+		}else{
+			id=/localimg([0-9]+)/.exec(src);
+			if(id && !isNaN(id[1]) && id[1]<image_set.length)
+				$(this).attr('src',image_set[id[1]]);
+		}
 	});
 }
 

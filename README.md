@@ -3,7 +3,7 @@
  
 ### 包含功能
 - Markdown编译器：[marked.js](https://marked.js.org/)(v4.2.4)
-- 代码编辑器：[codemirror](https://codemirror.net/)(v5.43.0)
+- 代码编辑器：[codemirror](https://codemirror.net/)(v5.65.11)
 - 数学公式渲染：[MathJax](https://www.mathjax.org/)(v3.2.2)
 - 代码渲染：[shjs](https://shjs.sourceforge.net/)
 - 实时预览

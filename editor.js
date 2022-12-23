@@ -82,21 +82,28 @@ function save()
 function init_editor() {
 	editor=CodeMirror($('#editor')[0], {
 		mode: 'markdown',
-		lineNumbers: true,
-		lineWrapping: true,
 		theme: 'default',
-		matchTags: {bothTags: true},
+		indentUnit: 4,
+		indentWithTabs: true,
+		lineWrapping: true,
+		lineNumbers: true,
+		autoCloseBrackets: true,
 		autoCloseTags: true,
+		matchBrackets: true,
+		matchTags: true,
 		foldGutter: true,
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-		styleActiveLine: true
-	});
-	editor.setOption("extraKeys", {
-		"Ctrl-S": function(cm) {
-			$('#save').click();
-		},
-		"Enter": "newlineAndIndentContinueMarkdownList",
-		"Ctrl-/": "toggleComment"
+		scrollPastEnd: true,
+		highlightSelectionMatches: {annotateScrollbar: true},
+		styleActiveLine: {nonEmpty: true},
+		extraKeys:{
+			"Ctrl-S": function(cm) {
+				$('#save').click();
+			},
+			"Ctrl-/": "toggleComment",
+			"Enter": "newlineAndIndentContinueMarkdownList",
+			"Ctrl-F": "findPersistent"
+		}
 	});
 	set_saved(false);
 	editor.on('change', function() {

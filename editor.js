@@ -127,11 +127,13 @@ function init_editor() {
 		$("#openFile").trigger("click");
 	});
 	$("#openFile").change(function(evt) {
-		FileEntry = $(this).val();
-		fs.readFile(FileEntry, function (err, data) {
+		newFileEntry = $(this).val();
+		fs.readFile(newFileEntry, function (err, data) {
 			if (err) {
-			  alert("Read failed: " + err);
+				alert("Read failed: " + err);
+				return;
 			}
+			FileEntry = newFileEntry;
 			document.title = FileEntry;
 			$('#filename').text(FileEntry);
 			data=imgExtract(String(data));
@@ -147,6 +149,8 @@ function init_editor() {
 	});
 	$("#saveFile").change(function(evt) {
 		FileEntry=$(this).val();
+		if(!/\.[\S]+$/.test(FileEntry))
+			FileEntry += ".md";
 		document.title = FileEntry;
 		$('#filename').text(FileEntry);
 		save();

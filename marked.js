@@ -10,7 +10,7 @@
  */
 
 /**
- * 修改内容：L1815：代码块语言修正；L1876：表格样式
+ * 修改内容：L1815~1816：代码块语言修正；L1877：表格样式
  */
 
 (function (global, factory) {
@@ -1812,7 +1812,8 @@
       if (!lang) {
         return '<pre><code>' + (escaped ? _code : escape(_code, true)) + '</code></pre>\n';
       }
-	  if(lang="c++") lang='cpp';
+	  if(lang=="c++") lang='cpp';
+	  if(lang=="shell") lang='sh';
       return '<pre><code class="' + this.options.langPrefix + escape(lang) + '">' + (escaped ? _code : escape(_code, true)) + '</code></pre>\n';
     }
 

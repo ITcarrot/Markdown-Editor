@@ -27,8 +27,12 @@ function getImgStr()
 function imgParseHtml(article)
 {
 	var ParseEntry = FileEntry;
-	ParseEntry = ParseEntry.replaceAll('\\','/');
-	ParseEntry = /.*\//.exec(ParseEntry)[0];
+	try{
+		ParseEntry = ParseEntry.replaceAll('\\','/');
+		ParseEntry = /.*\//.exec(ParseEntry)[0];
+	}catch{
+		ParseEntry = '';
+	}
 	article.find('img').each(function(){
 		var src=$(this).attr('src');
 		if(/^\.{1,2}\//.test(src))

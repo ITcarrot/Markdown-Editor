@@ -124,6 +124,7 @@ function init_editor() {
 	$('#open').click(function(){
 		if(!saved && !confirm('您所编辑的内容尚未保存，是否继续？'))
 			return;
+		$("#openFile").val('');
 		$("#openFile").trigger("click");
 	});
 	$("#openFile").change(function(evt) {

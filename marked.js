@@ -1,6 +1,6 @@
 /**
- * marked - a markdown parser
- * Copyright (c) 2011-2022, Christopher Jeffrey. (MIT Licensed)
+ * marked v4.2.12 - a markdown parser
+ * Copyright (c) 2011-2023, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked
  */
 
@@ -10,7 +10,7 @@
  */
 
 /**
- * 修改内容：L1815~1816：代码块语言修正；L1877：表格样式
+ * 修改内容：L1833~1834：代码块语言修正；L1895：表格样式
  */
 
 (function (global, factory) {
@@ -548,7 +548,9 @@
           }
           raw = cap[0];
           src = src.substring(raw.length);
-          line = cap[2].split('\n', 1)[0];
+          line = cap[2].split('\n', 1)[0].replace(/^\t+/, function (t) {
+            return ' '.repeat(3 * t.length);
+          });
           nextLine = src.split('\n', 1)[0];
           if (this.options.pedantic) {
             indent = 2;
@@ -567,7 +569,7 @@
             endEarly = true;
           }
           if (!endEarly) {
-            var nextBulletRegex = new RegExp("^ {0," + Math.min(3, indent - 1) + "}(?:[*+-]|\\d{1,9}[.)])((?: [^\\n]*)?(?:\\n|$))");
+            var nextBulletRegex = new RegExp("^ {0," + Math.min(3, indent - 1) + "}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))");
             var hrRegex = new RegExp("^ {0," + Math.min(3, indent - 1) + "}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)");
             var fencesBeginRegex = new RegExp("^ {0," + Math.min(3, indent - 1) + "}(?:```|~~~)");
             var headingBeginRegex = new RegExp("^ {0," + Math.min(3, indent - 1) + "}#");
@@ -575,25 +577,25 @@
             // Check if following lines should be included in List Item
             while (src) {
               rawLine = src.split('\n', 1)[0];
-              line = rawLine;
+              nextLine = rawLine;
 
               // Re-align to follow commonmark nesting rules
               if (this.options.pedantic) {
-                line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+                nextLine = nextLine.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
               }
 
               // End list item if found code fences
-              if (fencesBeginRegex.test(line)) {
+              if (fencesBeginRegex.test(nextLine)) {
                 break;
               }
 
               // End list item if found start of new heading
-              if (headingBeginRegex.test(line)) {
+              if (headingBeginRegex.test(nextLine)) {
                 break;
               }
 
               // End list item if found start of new bullet
-              if (nextBulletRegex.test(line)) {
+              if (nextBulletRegex.test(nextLine)) {
                 break;
               }
 
@@ -601,22 +603,38 @@
               if (hrRegex.test(src)) {
                 break;
               }
-              if (line.search(/[^ ]/) >= indent || !line.trim()) {
+              if (nextLine.search(/[^ ]/) >= indent || !nextLine.trim()) {
                 // Dedent if possible
-                itemContents += '\n' + line.slice(indent);
-              } else if (!blankLine) {
-                // Until blank line, item doesn't need indentation
-                itemContents += '\n' + line;
+                itemContents += '\n' + nextLine.slice(indent);
               } else {
-                // Otherwise, improper indentation ends this item
-                break;
+                // not enough indentation
+                if (blankLine) {
+                  break;
+                }
+
+                // paragraph continuation unless last line was a different block level element
+                if (line.search(/[^ ]/) >= 4) {
+                  // indented code block
+                  break;
+                }
+                if (fencesBeginRegex.test(line)) {
+                  break;
+                }
+                if (headingBeginRegex.test(line)) {
+                  break;
+                }
+                if (hrRegex.test(line)) {
+                  break;
+                }
+                itemContents += '\n' + nextLine;
               }
-              if (!blankLine && !line.trim()) {
+              if (!blankLine && !nextLine.trim()) {
                 // Check if current line is blank
                 blankLine = true;
               }
               raw += rawLine + '\n';
               src = src.substring(rawLine.length + 1);
+              line = nextLine.slice(indent);
             }
           }
           if (!list.loose) {

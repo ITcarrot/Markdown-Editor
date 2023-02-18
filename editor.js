@@ -113,7 +113,7 @@ function init_editor() {
 			$('#editor-preview').html(marked.parse(editor.getValue(),{langPrefix: 'sh_'}));
 			imgParseHtml($('#editor-preview'));
 			sh_highlightDocument($('#editor-preview')[0]);
-			MathJax.typesetPromise();
+			MathJax.typeset();
 		},500);
 	});
 	$('#new').click(function(){

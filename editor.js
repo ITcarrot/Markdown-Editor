@@ -2,45 +2,7 @@ onload = function() {
 	$('textarea').autosize();
 	init_editor();
 	sh_highlightDocument();
-	MathJax.typesetPromise();
-	$('#button-image-selector').click(function() {
-		$('#div-image-selector').toggle('fast');
-	});
-	$("#openImg").change(function(evt) {
-		fs.readFile($(this).val(), function (err, data) {
-			if (err) {
-			  alert("Read failed: " + err);
-			}
-			data = 'data:image;base64,' + new Buffer(data).toString('base64');
-			for(i=0;i<image_set.length;i++)
-				if(image_set[i]==''){
-					image_set[i]=data;
-					updateImgPool();
-					return;
-				}
-			image_set.push(data);
-			updateImgPool();
-		});
-	});
-	$('#paste-img')[0].addEventListener("paste", function (e){
-		e.preventDefault();
-		if ( !(e.clipboardData && e.clipboardData.files[0]) ) {
-			return;
-		}
-		var reader = new FileReader();
-		reader.readAsDataURL(e.clipboardData.files[0]);
-		reader.onload = function(evt) {
-			var data = evt.target.result;
-			for(i=0;i<image_set.length;i++)
-				if(image_set[i]==''){
-					image_set[i]=data;
-					updateImgPool();
-					return;
-				}
-			image_set.push(data);
-			updateImgPool();
-		}
-	});
+	MathJax.typeset();
 };
 
 before_window_unload_message = null;
@@ -79,6 +41,13 @@ function save()
 	set_saved(true);
 }
 
+function addAround(l,r){
+	selections=editor.getSelections();
+	for(var i=0;i<selections.length;i++)
+		selections[i]=l+selections[i]+r;
+	editor.replaceSelections(selections);
+}
+
 function init_editor() {
 	editor=CodeMirror($('#editor')[0], {
 		mode: 'markdown',
@@ -115,6 +84,17 @@ function init_editor() {
 			sh_highlightDocument($('#editor-preview')[0]);
 			MathJax.typeset();
 		},500);
+	});
+	editor.on("paste", function (editor, e){
+		if ( !(e.clipboardData && e.clipboardData.files[0]) ) {
+			return;
+		}
+		var reader = new FileReader();
+		reader.readAsDataURL(e.clipboardData.files[0]);
+		reader.onload = function(evt) {
+			str = addImg(evt.target.result);
+			addAround('','![]('+str+')');
+		}
 	});
 	$('#new').click(function(){
 		var x = window.screenX + 10;

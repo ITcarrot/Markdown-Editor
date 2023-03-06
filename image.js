@@ -50,7 +50,7 @@ function updateImgPool()
 	if(!$('#img-pool')[0]) return;
 	$('#img-pool').html('');
 	set_saved(false);
-	for(i=0;i<image_set.length;i++)
+	for(var i=0;i<image_set.length;i++)
 		if(image_set[i].length>0)
 			$('#img-pool').append('<img src="'+image_set[i]+'" onclick="delImg('+i+')" title="localimg'+i+'" />');
 }
@@ -64,3 +64,42 @@ function delImg(id)
 		updateImgPool();
 	}
 }
+
+function addImg(data)
+{
+	for(var i=0;i<image_set.length;i++)
+		if(image_set[i]==''){
+			image_set[i]=data;
+			updateImgPool();
+			return "localimg"+i;
+		}
+	image_set.push(data);
+	updateImgPool();
+	return "localimg"+(image_set.length-1);
+}
+
+$(document).ready(function(){
+	$('#button-image-selector').click(function() {
+		$('#div-image-selector').toggle('fast');
+	});
+	$("#openImg").change(function(evt) {
+		fs.readFile($(this).val(), function (err, data) {
+			if (err) {
+				alert("Read failed: " + err);
+			}
+			data = 'data:image;base64,' + new Buffer(data).toString('base64');
+			addImg(data);
+		});
+	});
+	$('#paste-img')[0].addEventListener("paste", function (e){
+		e.preventDefault();
+		if ( !(e.clipboardData && e.clipboardData.files[0]) ) {
+			return;
+		}
+		var reader = new FileReader();
+		reader.readAsDataURL(e.clipboardData.files[0]);
+		reader.onload = function(evt) {
+			addImg(evt.target.result);
+		}
+	});
+});

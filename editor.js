@@ -130,7 +130,7 @@ function init_editor() {
 	});
 	$("#saveFile").change(function(evt) {
 		FileEntry=$(this).val();
-		if(!/\.[\S]+$/.test(FileEntry))
+		if(!/\.[^\s/\\]+$/.test(FileEntry))
 			FileEntry += ".md";
 		document.title = FileEntry;
 		$('#filename').text(FileEntry);

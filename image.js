@@ -36,7 +36,7 @@ function imgParseHtml(article)
 	article.find('img').each(function(){
 		var src=$(this).attr('src');
 		if(/^\.{1,2}\//.test(src))
-			$(this).attr('src',ParseEntry + src);
+			$(this).attr('src',"file://" + ParseEntry + src);
 		else{
 			id=/localimg([0-9]+)/.exec(src);
 			if(id && !isNaN(id[1]) && id[1]<image_set.length)

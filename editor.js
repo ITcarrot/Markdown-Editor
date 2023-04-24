@@ -1,23 +1,9 @@
-onload = function() {
-	$('textarea').autosize();
-	init_editor();
-	hljs.highlightAll();
-	MathJax.typeset();
-};
-
 before_window_unload_message = null;
 $(window).on('beforeunload', function() {
 	if (before_window_unload_message !== null) {
 	    return before_window_unload_message;
 	}
 });
-
-var fs=require("fs");
-var editor;
-var preview_timer = -1;
-var autosave_timer = -1;
-var FileEntry = null;
-var saved;
 
 function set_saved(val)
 {
@@ -53,7 +39,7 @@ function addAround(l,r){
 	editor.replaceSelections(selections);
 }
 
-function init_editor() {
+onload = function() { // init_editor
 	editor=CodeMirror($('#editor')[0], {
 		mode: 'markdown',
 		theme: 'default',
@@ -87,7 +73,7 @@ function init_editor() {
 			$('#editor-preview').html(marked.parse(editor.getValue()));
 			imgParseHtml($('#editor-preview'));
 			hljs.highlightAll();
-			MathJax.typeset();
+			renderMathInElement($('#editor-preview')[0],MathConfig);
 		},500);
 	});
 	editor.on("paste", function (editor, e){
@@ -149,3 +135,22 @@ function init_editor() {
 		window.open('print.html?'+encodeURI(FileEntry));
 	});
 }
+
+var editor;
+var preview_timer = -1;
+var autosave_timer = -1;
+var FileEntry = null;
+var saved;
+var MathConfig = {
+	delimiters: [
+		{left: '$$', right: '$$', display: true},
+		{left: '$', right: '$', display: false},
+		{left: '\\(', right: '\\)', display: false},
+		{left: '\\[', right: '\\]', display: true}
+	],
+	throwOnError : false
+};
+$.each(['matrix','smallmatrix','array','pmatrix','bmatrix','Bmatrix','vmatrix','Vmatrix','cases','rcases','equation','align','alignat','gather','CD'],function(k,v){
+    MathConfig['delimiters'].push({left: '\\begin{' + v + '}', right: '\\end{' + v + '}', display: true})
+})
+var fs=require("fs");

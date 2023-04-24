@@ -8,20 +8,26 @@
 	<script src="jquery.autosize.min.js"></script>
 	<script src="bootstrap.min.js"></script>
 	
-	<script>
-	MathJax = {
-	  tex: {
-		inlineMath: [['$', '$'], ['\\(', '\\)']]
-	  }
-	};
-	</script>
-	<script id="MathJax-script" async src="MathJax-3.2.2/es5/tex-chtml-full.js"></script>
+	<script src="katex.min.js"></script>
+	<script src="auto-render.min.js"></script>
 	<script src="highlight.min.js"></script>
 	<script src="marked.js"></script>
 	<script src="image.js"></script>
 	
 	<script>
 		var fs=require('fs');
+		var MathConfig = {
+			delimiters: [
+				{left: '$$', right: '$$', display: true},
+				{left: '$', right: '$', display: false},
+				{left: '\\(', right: '\\)', display: false},
+				{left: '\\[', right: '\\]', display: true}
+			],
+			throwOnError : false
+		};
+		$.each(['matrix','smallmatrix','array','pmatrix','bmatrix','Bmatrix','vmatrix','Vmatrix','cases','rcases','equation','align','alignat','gather','CD'],function(k,v){
+			MathConfig['delimiters'].push({left: '\\begin{' + v + '}', right: '\\end{' + v + '}', display: true})
+		})
 		onload=function(){
 			FileEntry = decodeURI(location.search.substring(1));
 			fs.readFile(FileEntry, function (err, data) {
@@ -32,7 +38,7 @@
 				$('#content').html(marked.parse(data));
 				imgParseHtml($('#content'));
 				hljs.highlightAll();
-				MathJax.typesetPromise();
+				renderMathInElement($('#content')[0],MathConfig);
 			});
 		}
 	</script>
@@ -40,6 +46,7 @@
 	<link rel="stylesheet" href="bootstrap.min.css">
 	<link rel="stylesheet" href="uoj-theme.css">
 	<link rel="stylesheet" href="github.min.css">
+	<link rel="stylesheet" href="katex.min.css">
 	<style>
 		#print_button{
 			position: fixed;

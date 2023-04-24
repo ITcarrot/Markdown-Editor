@@ -15,6 +15,7 @@ $(window).on('beforeunload', function() {
 var fs=require("fs");
 var editor;
 var preview_timer = -1;
+var autosave_timer = -1;
 var FileEntry = null;
 var saved;
 
@@ -24,9 +25,13 @@ function set_saved(val)
 	if(val){
 		before_window_unload_message = null;
 		$('#save-tag').hide();
+		clearTimeout(autosave_timer);
+		autosave_timer = -1;
 	}else{
 		before_window_unload_message = '您所编辑的内容尚未保存';
 		$('#save-tag').show();
+		if(FileEntry && autosave_timer == -1)
+			autosave_timer=setTimeout(save,300000);
 	}
 }
 

@@ -2,8 +2,8 @@
  可以存图的本地Markdown编辑器
  
 ### 包含功能
-- Markdown编译器：[marked.js](https://marked.js.org/)(v4.2.12)
-- 代码编辑器：[codemirror](https://codemirror.net/)(v5.65.11)
+- Markdown编译器：[marked.js](https://marked.js.org/)(v4.3.0)
+- 代码编辑器：[codemirror](https://codemirror.net/)(v5.65.12)
 - 数学公式渲染：[MathJax](https://www.mathjax.org/)(v3.2.2)
 - 代码渲染：[shjs](https://shjs.sourceforge.net/)
 - 实时预览

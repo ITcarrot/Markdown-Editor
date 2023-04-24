@@ -16,7 +16,7 @@
 	};
 	</script>
 	<script id="MathJax-script" async src="MathJax-3.2.2/es5/tex-chtml-full.js"></script>
-	<script src="sh_main.min.js"></script>
+	<script src="highlight.min.js"></script>
 	<script src="marked.js"></script>
 	<script src="image.js"></script>
 	
@@ -29,9 +29,9 @@
 				  alert("Read failed: " + err);
 				}
 				data=imgExtract(String(data));
-				$('#content').html(marked.parse(data,{langPrefix: 'sh_'}));
+				$('#content').html(marked.parse(data));
 				imgParseHtml($('#content'));
-				sh_highlightDocument();
+				hljs.highlightAll();
 				MathJax.typesetPromise();
 			});
 		}
@@ -39,7 +39,7 @@
 	
 	<link rel="stylesheet" href="bootstrap.min.css">
 	<link rel="stylesheet" href="uoj-theme.css">
-	<link rel="stylesheet" href="sh_typical.min.css">
+	<link rel="stylesheet" href="github.min.css">
 	<style>
 		#print_button{
 			position: fixed;

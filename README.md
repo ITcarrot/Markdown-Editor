@@ -5,7 +5,7 @@
 - Markdown编译器：[marked.js](https://marked.js.org/)(v4.3.0)
 - 代码编辑器：[codemirror](https://codemirror.net/)(v5.65.12)
 - 数学公式渲染：[MathJax](https://www.mathjax.org/)(v3.2.2)
-- 代码渲染：[shjs](https://shjs.sourceforge.net/)
+- 代码渲染：[highlight.js](https://highlightjs.org/)(v11.7.0)
 - 实时预览
 - pdf导出
 - 内嵌图片

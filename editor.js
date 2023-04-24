@@ -1,7 +1,7 @@
 onload = function() {
 	$('textarea').autosize();
 	init_editor();
-	sh_highlightDocument();
+	hljs.highlightAll();
 	MathJax.typeset();
 };
 
@@ -84,9 +84,9 @@ function init_editor() {
 		set_saved(false);
 		clearTimeout(preview_timer);
 		preview_timer=setTimeout(function(){
-			$('#editor-preview').html(marked.parse(editor.getValue(),{langPrefix: 'sh_'}));
+			$('#editor-preview').html(marked.parse(editor.getValue()));
 			imgParseHtml($('#editor-preview'));
-			sh_highlightDocument($('#editor-preview')[0]);
+			hljs.highlightAll();
 			MathJax.typeset();
 		},500);
 	});

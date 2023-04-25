@@ -68,6 +68,9 @@ function delImg(id)
 function addImg(data)
 {
 	for(var i=0;i<image_set.length;i++)
+		if(image_set[i]==data)
+			return "localimg"+i;
+	for(var i=0;i<image_set.length;i++)
 		if(image_set[i]==''){
 			image_set[i]=data;
 			updateImgPool();

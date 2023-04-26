@@ -10,7 +10,7 @@
  */
 
 /**
- * 修改内容：L1894：表格样式
+ * 修改内容：L1834：语言识别；L1895：表格样式
  */
 
 (function (global, factory) {
@@ -1831,6 +1831,7 @@
       if (!lang) {
         return '<pre><code>' + (escaped ? _code : escape(_code, true)) + '</code></pre>\n';
       }
+	  if (lang=='c++'||lang=='h++') lang='cpp';
       return '<pre><code class="' + this.options.langPrefix + escape(lang) + '">' + (escaped ? _code : escape(_code, true)) + '</code></pre>\n';
     }
 

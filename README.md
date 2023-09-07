@@ -5,10 +5,11 @@
 - Markdown编译器：[marked.js](https://marked.js.org/)(v4.3.0)
 - 代码编辑器：[codemirror](https://codemirror.net/)(v5.65.12)
 - 数学公式渲染：[KaTeX](https://katex.org/)(v0.16.6)
+	- 编辑器可一键插入KaTex公式符号
 - 代码渲染：[highlight.js](https://highlightjs.org/)(v11.7.0)
 - 实时预览
-- pdf导出
-- 内嵌图片
+- pdf导出：可选A3或A4纸张大小
+- 图片拓展：可以在编辑器粘贴图片，可以在缩放图片（`![10px]()`或`![10%]()`）
 
 ### 使用方法
 

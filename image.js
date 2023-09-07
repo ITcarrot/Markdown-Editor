@@ -42,6 +42,9 @@ function imgParseHtml(article)
 			if(id && !isNaN(id[1]) && id[1]<image_set.length)
 				$(this).attr('src',image_set[id[1]]);
 		}
+		var alt=$(this).attr('alt');
+		if(/^[0-9]+px$/.test(alt) || /^[0-9]+%$/.test(alt))
+			$(this).attr('style','max-width:unset;width:' + alt);
 	});
 }
 

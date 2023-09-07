@@ -6,7 +6,9 @@
 	
 	<script src="jquery-3.6.0.min.js"></script>
 	<script src="jquery.autosize.min.js"></script>
+	<script src="jquery.cookie.min.js"></script>
 	<script src="bootstrap.min.js"></script>
+	<script src="bootstrap-switch.min.js"></script>
 	
 	<script src="katex.min.js"></script>
 	<script src="auto-render.min.js"></script>
@@ -40,22 +42,53 @@
 				hljs.highlightAll();
 				renderMathInElement($('#content')[0],MathConfig);
 			});
+			if($.cookie('page_size')=='a3'){
+				$('#page_size').attr('checked','checked');
+				$('body').css('width','1123px');
+			}
+			$('#page_size').bootstrapSwitch({
+				onText: "A3",
+				onColor: 'primary',
+				offText: "A4",
+				offColor: 'primary',
+				labelText: "纸张大小",
+				handleWidth: 100
+			});
+			$('#page_size').on('switchChange.bootstrapSwitch', function(e, state) {
+				if(state){
+					$.cookie('page_size', 'a3', {path: '/'});
+					$('body').css('width','1123px');
+				}else{
+					$.removeCookie('page_size', {path: '/'});
+					$('body').css('width','794px');
+				}
+			});
 		}
 	</script>
 	
 	<link rel="stylesheet" href="bootstrap.min.css">
+	<link rel="stylesheet" href="bootstrap-switch.min.css">
 	<link rel="stylesheet" href="uoj-theme.css">
 	<link rel="stylesheet" href="github.min.css">
 	<link rel="stylesheet" href="katex.min.css">
 	<style>
 		#print_button{
 			position: fixed;
-			top: 10%;
+			top: 15%;
+			right: 20%;
+			z-index:2333;
+		}
+		#div_page_size {
+			position: fixed;
+			top: 5%;
 			right: 20%;
 			z-index:2333;
 		}
 		@media print {
 			#print_button {
+				display: none;
+			}
+			#div_page_size {
 				display: none;
 			}
 		}
@@ -66,6 +99,9 @@
 </head>
 <body style="width:794px;margin:auto">
 	<article id="content"></article>
+	<div id="div_page_size">
+		<input type="checkbox" id="page_size"/>
+	</div>
 	<button class="btn btn-default btn-lg" id="print_button" onclick="window.print()">打印</button>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /**
- * marked v8.0.1 - a markdown parser
+ * marked v10.0.0 - a markdown parser
  * Copyright (c) 2011-2023, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked
  */
@@ -10,7 +10,7 @@
  */
 
 /**
- * 修改内容：L1640,1647：语言识别；L1686~1693：表格样式
+ * 修改内容：L1646,1653：语言识别；L1692~1699：表格样式
  */
 
 (function (global, factory) {
@@ -333,7 +333,7 @@
         blockquote(src) {
             const cap = this.rules.block.blockquote.exec(src);
             if (cap) {
-                const text = cap[0].replace(/^ *>[ \t]?/gm, '');
+                const text = rtrim(cap[0].replace(/^ *>[ \t]?/gm, ''), '\n');
                 const top = this.lexer.state.top;
                 this.lexer.state.top = true;
                 const tokens = this.lexer.blockTokens(text);
@@ -543,13 +543,17 @@
         table(src) {
             const cap = this.rules.block.table.exec(src);
             if (cap) {
+                if (!/[:|]/.test(cap[2])) {
+                    // delimiter row must have a pipe (|) or colon (:) otherwise it is a setext heading
+                    return;
+                }
                 const item = {
                     type: 'table',
                     raw: cap[0],
                     header: splitCells(cap[1]).map(c => {
                         return { text: c, tokens: [] };
                     }),
-                    align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
+                    align: cap[2].replace(/^\||\| *$/g, '').split('|'),
                     rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
                 };
                 if (item.header.length === item.align.length) {
@@ -776,7 +780,9 @@
                         continue; // Haven't found enough closing delimiters
                     // Remove extra characters. *a*** -> *a*
                     rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
-                    const raw = [...src].slice(0, lLength + match.index + rLength + 1).join('');
+                    // char length can be >1 for unicode characters;
+                    const lastCharLength = [...match[0]][0].length;
+                    const raw = src.slice(0, lLength + match.index + lastCharLength + rLength);
                     // Create `em` if smallest delimiter has odd char count. *a***
                     if (Math.min(lLength, rLength) % 2) {
                         const text = raw.slice(1, -1);
@@ -944,7 +950,7 @@
             + ')',
         def: /^ {0,3}\[(label)\]: *(?:\n *)?([^<\s][^\s]*|<.*?>)(?:(?: +(?:\n *)?| *\n *)(title))? *(?:\n+|$)/,
         table: noopTest,
-        lheading: /^((?:(?!^bull ).|\n(?!\n|bull ))+?)\n {0,3}(=+|-+) *(?:\n+|$)/,
+        lheading: /^(?!bull )((?:.|\n(?!\s*?\n|bull ))+?)\n {0,3}(=+|-+) *(?:\n+|$)/,
         // regex template, placeholders will be replaced according to different paragraph
         // interruption rules of commonmark and the original markdown spec:
         _paragraph: /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table| +\n)[^\n]+)*)/,
@@ -982,7 +988,7 @@
         .getRegex();
     block.paragraph = edit(block._paragraph)
         .replace('hr', block.hr)
-        .replace('heading', ' {0,3}#{1,6} ')
+        .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
         .replace('|lheading', '') // setex headings don't interrupt commonmark paragraphs
         .replace('|table', '')
         .replace('blockquote', ' {0,3}>')
@@ -1003,13 +1009,13 @@
      */
     block.gfm = {
         ...block.normal,
-        table: '^ *([^\\n ].*\\|.*)\\n' // Header
-            + ' {0,3}(?:\\| *)?(:?-+:? *(?:\\| *:?-+:? *)*)(?:\\| *)?' // Align
+        table: '^ *([^\\n ].*)\\n' // Header
+            + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
             + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
     };
     block.gfm.table = edit(block.gfm.table)
         .replace('hr', block.hr)
-        .replace('heading', ' {0,3}#{1,6} ')
+        .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
         .replace('blockquote', ' {0,3}>')
         .replace('code', ' {4}[^\\n]')
         .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
@@ -1019,7 +1025,7 @@
         .getRegex();
     block.gfm.paragraph = edit(block._paragraph)
         .replace('hr', block.hr)
-        .replace('heading', ' {0,3}#{1,6} ')
+        .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
         .replace('|lheading', '') // setex headings don't interrupt commonmark paragraphs
         .replace('table', block.gfm.table) // interrupt paragraphs with table
         .replace('blockquote', ' {0,3}>')
@@ -1307,7 +1313,7 @@
                     src = src.substring(token.raw.length);
                     if (token.raw.length === 1 && tokens.length > 0) {
                         // if there's a single \n as a spacer, it's terminating the last line,
-                        // so move it there so that we don't get unecessary paragraph tags
+                        // so move it there so that we don't get unnecessary paragraph tags
                         tokens[tokens.length - 1].raw += '\n';
                     }
                     else {
@@ -2057,11 +2063,9 @@
         parse = this.#parseMarkdown(_Lexer.lex, _Parser.parse);
         parseInline = this.#parseMarkdown(_Lexer.lexInline, _Parser.parseInline);
         Parser = _Parser;
-        parser = _Parser.parse;
         Renderer = _Renderer;
         TextRenderer = _TextRenderer;
         Lexer = _Lexer;
-        lexer = _Lexer.lex;
         Tokenizer = _Tokenizer;
         Hooks = _Hooks;
         constructor(...args) {
@@ -2257,6 +2261,12 @@
         setOptions(opt) {
             this.defaults = { ...this.defaults, ...opt };
             return this;
+        }
+        lexer(src, options) {
+            return _Lexer.lex(src, options ?? this.defaults);
+        }
+        parser(tokens, options) {
+            return _Parser.parse(tokens, options ?? this.defaults);
         }
         #parseMarkdown(lexer, parser) {
             return (src, options) => {

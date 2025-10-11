@@ -1,107 +1,41 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Markdown Printer</title>
-	<meta charset="utf-8">
-	
-	<script src="jquery-3.6.0.min.js"></script>
-	<script src="jquery.autosize.min.js"></script>
-	<script src="jquery.cookie.min.js"></script>
-	<script src="bootstrap.min.js"></script>
-	<script src="bootstrap-switch.min.js"></script>
-	
-	<script src="katex.min.js"></script>
-	<script src="auto-render.min.js"></script>
-	<script src="highlight.min.js"></script>
-	<script src="marked.js"></script>
-	<script src="image.js"></script>
-	
-	<script>
-		var fs=require('fs');
-		var MathConfig = {
-			delimiters: [
-				{left: '$$', right: '$$', display: true},
-				{left: '$', right: '$', display: false},
-				{left: '\\(', right: '\\)', display: false},
-				{left: '\\[', right: '\\]', display: true}
-			],
-			throwOnError : false
-		};
-		$.each(['matrix','smallmatrix','array','pmatrix','bmatrix','Bmatrix','vmatrix','Vmatrix','cases','rcases','equation','align','alignat','gather','CD'],function(k,v){
-			MathConfig['delimiters'].push({left: '\\begin{' + v + '}', right: '\\end{' + v + '}', display: true})
-		})
-		onload=function(){
-			FileEntry = decodeURI(location.search.substring(1));
-			fs.readFile(FileEntry, function (err, data) {
-				if (err) {
-				  alert("Read failed: " + err);
-				}
-				data=imgExtract(String(data));
-				$('#content').html(marked.parse(data));
-				imgParseHtml($('#content'));
-				hljs.highlightAll();
-				renderMathInElement($('#content')[0],MathConfig);
-			});
-			if($.cookie('page_size')=='a3'){
-				$('#page_size').attr('checked','checked');
-				$('body').css('width','1123px');
-			}
-			$('#page_size').bootstrapSwitch({
-				onText: "A3",
-				onColor: 'primary',
-				offText: "A4",
-				offColor: 'primary',
-				labelText: "纸张大小",
-				handleWidth: 100
-			});
-			$('#page_size').on('switchChange.bootstrapSwitch', function(e, state) {
-				if(state){
-					$.cookie('page_size', 'a3', {path: '/'});
-					$('body').css('width','1123px');
-				}else{
-					$.removeCookie('page_size', {path: '/'});
-					$('body').css('width','794px');
-				}
-			});
-		}
-	</script>
-	
-	<link rel="stylesheet" href="bootstrap.min.css">
-	<link rel="stylesheet" href="bootstrap-switch.min.css">
-	<link rel="stylesheet" href="uoj-theme.css">
-	<link rel="stylesheet" href="github.min.css">
-	<link rel="stylesheet" href="katex.min.css">
-	<style>
-		#print_button{
-			position: fixed;
-			top: 15%;
-			right: 20%;
-			z-index:2333;
-		}
-		#div_page_size {
-			position: fixed;
-			top: 5%;
-			right: 20%;
-			z-index:2333;
-		}
-		@media print {
-			#print_button {
-				display: none;
-			}
-			#div_page_size {
-				display: none;
-			}
-		}
-		img{
-			max-width:100%
-		}
-	</style>
-</head>
-<body style="width:794px;margin:auto">
-	<article id="content"></article>
-	<div id="div_page_size">
-		<input type="checkbox" id="page_size"/>
-	</div>
-	<button class="btn btn-default btn-lg" id="print_button" onclick="window.print()">打印</button>
-</body>
+  <head>
+    <title>Markdown Printer</title>
+    <meta charset="utf-8" />
+
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="css/bootstrap-custom.css" />
+    <link rel="stylesheet" href="css/uoj-theme.css" />
+
+    <script src="node_modules/marked/marked.min.js"></script>
+    <script src="node_modules/katex/dist/katex.js"></script>
+    <script src="node_modules/katex/dist/contrib/auto-render.js"></script>
+    <link rel="stylesheet" href="node_modules/katex/dist/katex.css" />
+    <script src="prism/prism.js"></script>
+    <link rel="stylesheet" href="prism/prism.css" />
+    <script src="js/render.js"></script>
+    <link rel="stylesheet" href="css/render.css" />
+
+    <script src="node_modules/jquery.cookie/jquery.cookie.js"></script>
+    <script src="node_modules/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
+    <link
+      rel="stylesheet"
+      href="node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css"
+    />
+
+    <script src="js/image.js"></script>
+    <link rel="stylesheet" href="css/image.css" />
+
+    <script src="js/print.js"></script>
+    <link rel="stylesheet" href="css/print.css" />
+  </head>
+  <body style="width: 794px; margin: auto">
+    <article id="content"></article>
+    <div id="div_page_size">
+      <input type="checkbox" id="page_size" />
+    </div>
+    <button class="btn btn-default btn-lg" id="print_button">打印</button>
+  </body>
 </html>

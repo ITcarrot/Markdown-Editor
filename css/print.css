@@ -1,0 +1,23 @@
+#print_button {
+  position: fixed;
+  top: 15%;
+  right: 20%;
+  z-index: 2333;
+}
+#div_page_size {
+  position: fixed;
+  top: 5%;
+  right: 20%;
+  z-index: 2333;
+}
+@media print {
+  #print_button {
+    display: none;
+  }
+  #div_page_size {
+    display: none;
+  }
+}
+img {
+  max-width: 100%;
+}

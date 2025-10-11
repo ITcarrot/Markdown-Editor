@@ -1,0 +1,19 @@
+#div-image-selector {
+  background: white;
+  position: relative;
+  z-index: 10;
+}
+
+#img-pool {
+  max-height: 500px;
+  overflow: auto;
+}
+
+#img-pool img {
+  max-height: 200px;
+  max-width: 300px;
+}
+
+#editor-preview img {
+  max-width: 100%;
+}

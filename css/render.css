@@ -1,0 +1,5 @@
+code[class*="language-"],
+pre[class*="language-"] {
+  background: white;
+  white-space: pre-wrap;
+}

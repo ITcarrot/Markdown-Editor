@@ -25,7 +25,9 @@
 
 !/node_modules/marked
 /node_modules/marked/*
-!/node_modules/marked/marked.min.js
+!/node_modules/marked/lib
+/node_modules/marked/lib/*
+!/node_modules/marked/lib/marked.umd.js
 
 !/node_modules/katex
 /node_modules/katex/*

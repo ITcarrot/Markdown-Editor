@@ -4,11 +4,11 @@
   "main": "index.html",
   "dependencies": {
     "bootstrap": "^3.4.1",
-    "bootstrap-switch": "^3.3.2",
-    "codemirror": "^5.65.16",
+    "bootstrap-switch": "^3.3.5",
+    "codemirror": "^5.65.20",
     "jquery": "^3.7.1",
     "jquery.cookie": "^1.4.1",
-    "katex": "^0.16.10",
-    "marked": "^13.0.0"
+    "katex": "^0.16.23",
+    "marked": "^16.4.0"
   }
 }
